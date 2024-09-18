@@ -4,6 +4,21 @@ from django.contrib.auth.models import User
 
 
 # Create your models here.
+# create a custom model manager
+class PublishedManager(models.Manager):
+    """return all posts with a published status"""
+    def get_queryset(self):
+        # return super().get_queryset().filter(status=Post.Status.PUBLISHED)
+        return super().get_queryset() \
+            .filter(status=Post.Status.PUBLISHED)
+    
+class DateManager(models.Manager):
+    """returns all posts ordering them by date published"""
+    def get_queryset(self):
+        return super().get_queryset().order_by('publish')
+
+
+
 class Post(models.Model):
 
     class Status(models.TextChoices):
@@ -22,6 +37,11 @@ class Post(models.Model):
     status = models.CharField(max_length=2,
                             choices=Status.choices,
                             default=Status.DRAFT)
+
+
+    objects = models.Manager() #default manager.if none specified its selected automatically
+    published = PublishedManager() #custom manager
+    date = DateManager() #custom manager
 
     # order blogs chronologically
     class Meta:

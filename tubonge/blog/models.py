@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 
 # Create your models here.
@@ -53,3 +54,8 @@ class Post(models.Model):
     # return human readable name whe queried
     def __str__(self):
         return self.title
+    
+    # using canonical urls
+    def get_absolute_urls(self):
+        return reverse('blog:post_detail',
+                       args=[self.id])

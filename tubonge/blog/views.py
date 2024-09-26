@@ -4,12 +4,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Post
 from .forms import EmailPostForm
 from django.core.mail import send_mail
-import os
-from dotenv import load_dotenv
+from tubonge.settings import EMAIL_HOST_USER
 
-load_dotenv('../tubonge/')
+
 # Create your views here.
-
 # list all the posts published
 def post_list(request):
     post_list = Post.published.all()
@@ -58,8 +56,7 @@ def post_share(request, post_id):
             subject = f"{cd['name']} recommends you read {post.title}"
             message = f"Read {post.title} at {post_url}\n\n"\
                     f"{cd['name']}\'s comments: {cd['comments']}"
-            print(f"User is: {os.getenv('EMAIL_HOST_USER')}")
-            send_mail(subject, message, os.getenv('EMAIL_HOST_USER'), [cd['to']])
+            send_mail(subject, message, EMAIL_HOST_USER, [cd['to']])
             sent = True
     else:
         form = EmailPostForm()
